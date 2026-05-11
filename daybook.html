@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>The Day Book</title>
+
+<!-- PWA -->
+<meta name="theme-color" content="#FFF8EB" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Day Book" />
+<meta name="mobile-web-app-capable" content="yes" />
+
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"The Day Book","short_name":"Day Book","start_url":"./","display":"standalone","orientation":"portrait","background_color":"%23FFF8EB","theme_color":"%23FFF8EB","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%23FF8E72%22/><stop offset=%221%22 stop-color=%22%23FF5476%22/></linearGradient></defs><rect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23g)%22/><text x=%22256%22 y=%22340%22 font-family=%22serif%22 font-weight=%22700%22 font-size=%22320%22 text-anchor=%22middle%22 fill=%22white%22>D</text></svg>","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}' />
+
+<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%23FF8E72"/><stop offset="1" stop-color="%23FF5476"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="url(%23g)"/><text x="256" y="340" font-family="serif" font-weight="700" font-size="320" text-anchor="middle" fill="white">D</text></svg>' />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #FFF8EB;
+    --bg-soft: #FBF1DC;
+    --card: #FFFFFF;
+    --ink: #1A1410;
+    --ink-2: #6B6258;
+    --ink-3: #A89F92;
+    --line: #F0E5D0;
+    --line-2: #EADFC8;
+
+    --coral-1: #FF8E72;
+    --coral-2: #FF5476;
+    --tang-1: #FFA85C;
+    --tang-2: #FF5722;
+    --indigo-1: #7C8AFF;
+    --indigo-2: #4F46E5;
+    --emerald-1: #34D399;
+    --emerald-2: #059669;
+    --amber-1: #FBBF24;
+    --amber-2: #F59E0B;
+    --rose-1: #FB7185;
+    --rose-2: #E11D48;
+
+    --grad-coral: linear-gradient(135deg, var(--coral-1), var(--coral-2));
+    --grad-tang: linear-gradient(135deg, var(--tang-1), var(--tang-2));
+    --grad-indigo: linear-gradient(135deg, var(--indigo-1), var(--indigo-2));
+    --grad-emerald: linear-gradient(135deg, var(--emerald-1), var(--emerald-2));
+    --grad-amber: linear-gradient(135deg, var(--amber-1), var(--amber-2));
+    --grad-rose: linear-gradient(135deg, var(--rose-1), var(--rose-2));
+
+    --shadow-sm: 0 1px 2px rgba(26, 20, 16, 0.05);
+    --shadow-md: 0 4px 16px rgba(26, 20, 16, 0.06);
+    --shadow-lg: 0 12px 36px rgba(26, 20, 16, 0.10);
+
+    --r-sm: 14px;
+    --r-md: 20px;
+    --r-lg: 28px;
+    --r-xl: 36px;
+
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+    --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --font-body: 'Geist', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.45;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { min-height: 100vh; min-height: 100dvh; }
+
+  button { font: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+  input, textarea {
+    font: inherit; color: inherit;
+    background: transparent; border: none; outline: none;
+    width: 100%;
+  }
+  textarea { resize: none; font-family: inherit; }
+
+  /* App shell */
+  #app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh; min-height: 100dvh;
+    padding-bottom: calc(96px + var(--safe-bottom));
+    position: relative;
+  }
+
+  /* Header */
+  .header {
+    padding: calc(20px + var(--safe-top)) 20px 8px;
+  }
+  .header .date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin-bottom: 4px;
+  }
+  .header .greeting {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .header .greeting .accent {
+    background: var(--grad-coral);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Page sections */
+  .page {
+    padding: 20px;
+    animation: pageIn 360ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    color: var(--ink-2);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .eyebrow {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink);
+  }
+
+  /* Hero progress card */
+  .hero {
+    background: var(--card);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 28px;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--grad-coral);
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .ring-wrap {
+    position: relative;
+    width: 84px; height: 84px;
+    flex-shrink: 0;
+  }
+  .ring-wrap svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+  .ring-bg { stroke: var(--line); fill: none; stroke-width: 8; }
+  .ring-fg { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 600ms cubic-bezier(0.2, 0.9, 0.3, 1); }
+  .ring-pct {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 22px; letter-spacing: -0.02em;
+  }
+  .hero-text .label {
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-2); margin-bottom: 4px;
+  }
+  .hero-text .stat {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 28px; line-height: 1.1; letter-spacing: -0.02em;
+  }
+  .hero-text .sub {
+    font-size: 13px; color: var(--ink-2); margin-top: 2px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border-radius: var(--r-md);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .card-tap:active { transform: scale(0.985); }
+
+  .card-stack { display: flex; flex-direction: column; gap: 12px; }
+
+  /* Habit row */
+  .habit-row {
+    background: var(--card);
+    border-radius: var(--r-md);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    transition: all 200ms ease;
+  }
+  .habit-row.done {
+    background: var(--bg-soft);
+  }
+  .check {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--line-2);
+    background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    color: transparent;
+    transition: all 240ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+    flex-shrink: 0;
+  }
+  .check svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .check.checked {
+    background: var(--grad-tang);
+    border-color: transparent;
+    color: white;
+    transform: scale(1.05);
+    animation: pop 360ms cubic-bezier(0.2, 0.9, 0.3, 1.6);
+  }
+  @keyframes pop {
+    0% { transform: scale(0.8); }
+    50% { transform: scale(1.18); }
+    100% { transform: scale(1.05); }
+  }
+  .habit-name {
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 17px;
+    letter-spacing: -0.01em; line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .habit-meta {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--ink-2);
+  }
+  .habit-meta .dot { color: var(--line-2); }
+  .streak-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 11px;
+    background: var(--grad-tang);
+    color: white;
+  }
+  .streak-pill svg { width: 11px; height: 11px; }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    color: var(--ink-3);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 160ms ease;
+  }
+  .icon-btn:hover { background: var(--bg-soft); color: var(--ink); }
+  .icon-btn:active { transform: scale(0.92); }
+
+  /* Goal card */
+  .goal-card, .project-card {
+    background: var(--card);
+    border-radius: var(--r-md);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    position: relative; overflow: hidden;
+    transition: transform 180ms ease;
+  }
+  .goal-card:active, .project-card:active { transform: scale(0.985); }
+  .goal-card::before, .project-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+  }
+  .goal-card.personal::before { background: var(--grad-emerald); }
+  .goal-card.professional::before { background: var(--grad-indigo); }
+  .project-card.planning::before { background: var(--grad-amber); }
+  .project-card.active::before { background: var(--grad-emerald); }
+  .project-card.hold::before { background: var(--grad-amber); }
+  .project-card.done::before { background: linear-gradient(135deg, #94A3B8, #64748B); }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 999px;
+  }
+  .pill.personal { background: rgba(5, 150, 105, 0.12); color: var(--emerald-2); }
+  .pill.professional { background: rgba(79, 70, 229, 0.12); color: var(--indigo-2); }
+  .pill.planning { background: rgba(245, 158, 11, 0.12); color: var(--amber-2); }
+  .pill.active { background: rgba(5, 150, 105, 0.12); color: var(--emerald-2); }
+  .pill.hold { background: rgba(245, 158, 11, 0.12); color: var(--amber-2); }
+  .pill.done { background: rgba(100, 116, 139, 0.14); color: #475569; }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 19px;
+    line-height: 1.2; letter-spacing: -0.015em;
+    margin: 8px 0 6px;
+  }
+  .card-desc {
+    font-size: 13.5px; color: var(--ink-2); line-height: 1.45;
+    margin-bottom: 14px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .progress-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--ink-2);
+    letter-spacing: 0.06em;
+  }
+  .progress-row .pct { color: var(--ink); font-weight: 600; }
+  .progress-bar {
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 999px;
+    background: var(--grad-emerald);
+    transition: width 600ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+  .goal-card.professional .progress-fill { background: var(--grad-indigo); }
+  .project-card .progress-fill { background: var(--grad-emerald); }
+
+  .meta-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--ink-2);
+  }
+  .meta-row .overdue { color: var(--rose-2); font-weight: 600; }
+
+  /* Heat map */
+  .heatmap {
+    display: flex; gap: 3px;
+    overflow-x: auto;
+    padding: 2px 0;
+  }
+  .heat-col { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+  .heat-cell {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    background: var(--line);
+    transition: background 200ms ease;
+  }
+  .heat-cell.done { background: var(--grad-tang); }
+  .heat-cell.today { box-shadow: 0 0 0 1.5px var(--ink) inset; }
+
+  .week-dots {
+    display: flex; gap: 5px; align-items: center;
+    margin-top: 10px;
+  }
+  .week-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--line);
+  }
+  .week-dot.done { background: var(--tang-2); }
+  .week-dot.today { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--tang-2); }
+
+  /* Bottom nav */
+  .tabbar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 30;
+    display: flex; justify-content: center;
+    pointer-events: none;
+    padding: 0 16px calc(12px + var(--safe-bottom));
+  }
+  .tabbar-inner {
+    pointer-events: auto;
+    width: 100%; max-width: 448px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+  }
+  .tab {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+    padding: 10px 6px;
+    border-radius: 16px;
+    color: var(--ink-3);
+    transition: all 240ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    position: relative;
+  }
+  .tab svg { width: 22px; height: 22px; transition: transform 240ms ease; }
+  .tab .label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .tab.active { color: white; }
+  .tab.active svg { transform: scale(1.05); }
+  .tab.active.today { background: var(--grad-coral); }
+  .tab.active.habits { background: var(--grad-tang); }
+  .tab.active.goals { background: var(--grad-indigo); }
+  .tab.active.projects { background: var(--grad-emerald); }
+  .tab:active { transform: scale(0.94); }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: calc(102px + var(--safe-bottom));
+    right: max(20px, env(safe-area-inset-right));
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    z-index: 25;
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 28px rgba(255, 87, 34, 0.45);
+    transition: transform 200ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+  }
+  .fab svg { width: 26px; height: 26px; stroke-width: 2.5; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .fab:active { transform: scale(0.92); }
+  .fab.habits { background: var(--grad-tang); box-shadow: 0 10px 28px rgba(255, 87, 34, 0.45); }
+  .fab.goals { background: var(--grad-indigo); box-shadow: 0 10px 28px rgba(79, 70, 229, 0.4); }
+  .fab.projects { background: var(--grad-emerald); box-shadow: 0 10px 28px rgba(5, 150, 105, 0.4); }
+
+  /* Filter pills */
+  .filters {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 18px;
+    overflow-x: auto;
+  }
+  .filter {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 500;
+    background: var(--card);
+    color: var(--ink-2);
+    border: 1px solid var(--line);
+    white-space: nowrap;
+    transition: all 160ms ease;
+  }
+  .filter.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  /* Empty state */
+  .empty {
+    background: var(--card);
+    border-radius: var(--r-lg);
+    padding: 36px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .empty .emoji { font-size: 44px; margin-bottom: 12px; display: block; }
+  .empty .title {
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 19px; letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .empty .sub { color: var(--ink-2); font-size: 14px; margin-bottom: 18px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 600; font-size: 14px;
+    background: var(--ink); color: var(--bg);
+    transition: all 160ms ease;
+  }
+  .btn.primary { background: var(--grad-tang); color: white; box-shadow: 0 6px 18px rgba(255, 87, 34, 0.35); }
+  .btn.primary.indigo { background: var(--grad-indigo); box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35); }
+  .btn.primary.emerald { background: var(--grad-emerald); box-shadow: 0 6px 18px rgba(5, 150, 105, 0.35); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn.danger { background: transparent; color: var(--rose-2); border: 1px solid rgba(225, 29, 72, 0.25); }
+  .btn:active { transform: scale(0.97); }
+
+  /* Sheet (modal) */
+  .scrim {
+    position: fixed; inset: 0;
+    background: rgba(26, 20, 16, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+    opacity: 0; pointer-events: none;
+    transition: opacity 280ms ease;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--bg);
+    border-radius: 28px 28px 0 0;
+    z-index: 41;
+    transform: translateY(100%);
+    transition: transform 360ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    max-height: 92vh;
+    display: flex; flex-direction: column;
+    padding-bottom: var(--safe-bottom);
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-handle {
+    width: 38px; height: 4px;
+    background: var(--line-2);
+    border-radius: 999px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+  }
+  .sheet-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px 8px;
+    flex-shrink: 0;
+  }
+  .sheet-title {
+    font-family: var(--font-display);
+    font-weight: 700; font-size: 24px;
+    letter-spacing: -0.02em;
+  }
+  .sheet-body {
+    padding: 8px 20px 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .sheet-actions {
+    padding: 16px 20px calc(16px + var(--safe-bottom));
+    display: flex; gap: 10px; justify-content: flex-end;
+    flex-shrink: 0;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  /* Form fields */
+  .field { margin-bottom: 18px; }
+  .field-label {
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-2); font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .input-wrap {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    padding: 12px 14px;
+    transition: border-color 200ms ease;
+  }
+  .input-wrap:focus-within { border-color: var(--ink); }
+  .input-wrap input, .input-wrap textarea {
+    font-size: 15px;
+  }
+  .input-wrap textarea { min-height: 56px; }
+
+  .chip-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--card);
+    color: var(--ink-2);
+    border: 1px solid var(--line);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip.active {
+    background: var(--ink); color: var(--bg); border-color: var(--ink);
+  }
+  .chip svg { width: 12px; height: 12px; }
+
+  /* Slider */
+  .slider-wrap { padding: 6px 0 4px; }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px;
+    background: var(--line); border-radius: 999px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--ink);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--ink); border: none; cursor: pointer;
+  }
+
+  /* Milestones in form */
+  .ms-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .ms-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: var(--card);
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+  }
+  .ms-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 1.5px solid var(--line-2);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: transparent;
+  }
+  .ms-check.checked {
+    background: var(--grad-emerald);
+    border-color: transparent;
+    color: white;
+  }
+  .ms-check svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .ms-text { flex: 1; font-size: 14px; }
+  .ms-text.done { text-decoration: line-through; color: var(--ink-3); }
+  .ms-add {
+    display: flex; gap: 8px; align-items: stretch;
+  }
+  .ms-add .input-wrap { flex: 1; padding: 10px 12px; }
+  .ms-add button { padding: 10px 16px; border-radius: var(--r-sm); background: var(--ink); color: var(--bg); font-weight: 500; font-size: 13px; }
+
+  /* Loading */
+  .loader {
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+  }
+  .loader-icon {
+    width: 56px; height: 56px;
+    border-radius: 18px;
+    background: var(--grad-coral);
+    box-shadow: 0 12px 36px rgba(255, 84, 118, 0.4);
+    animation: bob 1800ms ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-6px) rotate(3deg); }
+  }
+  .loader-text {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--ink-2); font-size: 15px;
+  }
+
+  /* Confetti burst */
+  .burst {
+    position: fixed; pointer-events: none;
+    z-index: 100;
+  }
+  .burst .piece {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    animation: shoot 800ms cubic-bezier(0.2, 0.7, 0.4, 1) forwards;
+  }
+  @keyframes shoot {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(0.4); opacity: 0; }
+  }
+
+  /* Misc */
+  .row-tap { width: 100%; text-align: left; display: block; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .between { display: flex; align-items: center; justify-content: space-between; }
+  .gap-3 { gap: 10px; }
+
+  /* Hide scrollbar but allow scroll */
+  .scroll-x {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scroll-x::-webkit-scrollbar { display: none; }
+  .h-stack { display: flex; gap: 12px; padding-right: 12px; }
+  .h-stack > * { flex: 0 0 280px; }
+
+  /* Page section spacing */
+  .section { margin-bottom: 28px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="loader">
+    <div class="loader-icon"></div>
+    <div class="loader-text">Opening the day book…</div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"></div>
+
+<script>
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const ICONS = {
+  sparkles: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.94 14.34 9 17l-.94-2.66a4 4 0 0 0-2.4-2.4L3 11l2.66-.94a4 4 0 0 0 2.4-2.4L9 5l.94 2.66a4 4 0 0 0 2.4 2.4L15 11l-2.66.94a4 4 0 0 0-2.4 2.4Z"/><path d="M18 3v4M16 5h4"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+  flameSolid: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4 3.5 5.5 5 7.5 1.5 2 2 4 2 5.5a7 7 0 1 1-14 0c0-1.5.5-2.8 1.5-4 .5 1.2 1.5 2 2.5 2 0-2 0-3.5 1-5 1-1.5 2-3.5 2-6z"/></svg>',
+  target: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+  briefcase: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+  plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  arrowUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>',
+  flag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4a8 8 0 0 1 14 4 8 8 0 0 1-14 0"/><path d="M4 22V4"/></svg>',
+};
+
+const STATUS = [
+  { v: 'planning', l: 'Planning', emoji: '🌱' },
+  { v: 'active', l: 'Active', emoji: '🚀' },
+  { v: 'hold', l: 'On Hold', emoji: '⏸' },
+  { v: 'done', l: 'Complete', emoji: '🏁' },
+];
+
+const STORAGE_KEY = 'daybook:state:v1';
+
+/* ============================================================
+   DATE HELPERS
+   ============================================================ */
+function dKey(d = new Date()) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+function fromKey(k) {
+  const [y, m, d] = k.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+function daysBetween(a, b) {
+  return Math.round((fromKey(b) - fromKey(a)) / 86400000);
+}
+function calcStreak(dates) {
+  if (!dates || !dates.length) return 0;
+  const set = new Set(dates);
+  const today = dKey();
+  const yest = dKey(new Date(Date.now() - 86400000));
+  let cursor = set.has(today) ? today : (set.has(yest) ? yest : null);
+  if (!cursor) return 0;
+  let n = 0;
+  while (set.has(cursor)) {
+    n++;
+    const d = fromKey(cursor);
+    d.setDate(d.getDate() - 1);
+    cursor = dKey(d);
+  }
+  return n;
+}
+function longestStreak(dates) {
+  if (!dates || !dates.length) return 0;
+  const sorted = [...new Set(dates)].sort();
+  let best = 1, cur = 1;
+  for (let i = 1; i < sorted.length; i++) {
+    if (daysBetween(sorted[i - 1], sorted[i]) === 1) { cur++; best = Math.max(best, cur); }
+    else cur = 1;
+  }
+  return best;
+}
+function uid() { return Math.random().toString(36).slice(2, 10); }
+
+/* ============================================================
+   STORAGE — works in artifact (window.storage) and PWA (localStorage)
+   ============================================================ */
+const Store = {
+  async load() {
+    try {
+      if (typeof window.storage !== 'undefined' && window.storage.get) {
+        const r = await window.storage.get(STORAGE_KEY);
+        if (r && r.value) return JSON.parse(r.value);
+      } else if (typeof localStorage !== 'undefined') {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      }
+    } catch (e) { /* fresh start */ }
+    return null;
+  },
+  async save(state) {
+    try {
+      const json = JSON.stringify(state);
+      if (typeof window.storage !== 'undefined' && window.storage.set) {
+        await window.storage.set(STORAGE_KEY, json);
+      } else if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY, json);
+      }
+    } catch (e) { console.error('save failed', e); }
+  }
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const DEFAULT_STATE = {
+  habits: [],
+  goals: [],
+  projects: [],
+  meta: { createdAt: dKey() }
+};
+let state = { ...DEFAULT_STATE };
+let view = 'today';
+let saveTimer = null;
+
+function setState(updater) {
+  state = updater(state);
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => Store.save(state), 200);
+  render();
+}
+
+/* ============================================================
+   CONFETTI BURST
+   ============================================================ */
+function burst(x, y, colors = ['#FFA85C', '#FF5722', '#FFB088', '#FF5476']) {
+  const wrap = document.createElement('div');
+  wrap.className = 'burst';
+  wrap.style.left = x + 'px';
+  wrap.style.top = y + 'px';
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('div');
+    p.className = 'piece';
+    const angle = (Math.PI * 2 * i) / 14 + Math.random() * 0.4;
+    const dist = 60 + Math.random() * 40;
+    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+    p.style.setProperty('--r', (Math.random() * 360) + 'deg');
+    p.style.background = colors[i % colors.length];
+    wrap.appendChild(p);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 900);
+}
+
+/* ============================================================
+   MUTATORS
+   ============================================================ */
+function toggleHabit(hid, ev) {
+  const today = dKey();
+  let triggered = false;
+  setState(s => ({
+    ...s,
+    habits: s.habits.map(h => {
+      if (h.id !== hid) return h;
+      const has = h.completions.includes(today);
+      if (!has) {
+        triggered = true;
+        const newStreak = calcStreak([...h.completions, today]);
+        if (newStreak > 0 && (newStreak === 7 || newStreak === 30 || newStreak === 100 || newStreak === 365)) {
+          setTimeout(() => {
+            if (ev && ev.target) {
+              const r = ev.target.getBoundingClientRect();
+              burst(r.left + r.width/2, r.top + r.height/2);
+            }
+          }, 50);
+        }
+        return { ...h, completions: [...h.completions, today] };
+      }
+      return { ...h, completions: h.completions.filter(c => c !== today) };
+    })
+  }));
+  if (triggered && ev && ev.target) {
+    const r = ev.target.getBoundingClientRect();
+    burst(r.left + r.width/2, r.top + r.height/2, ['#FFA85C', '#FF5722']);
+  }
+}
+
+function saveHabit(payload, existingId) {
+  setState(s => {
+    if (existingId) {
+      return { ...s, habits: s.habits.map(h => h.id === existingId ? { ...h, ...payload } : h) };
+    }
+    return { ...s, habits: [...s.habits, { id: uid(), createdAt: dKey(), completions: [], ...payload }] };
+  });
+}
+function deleteHabit(hid) {
+  setState(s => ({ ...s, habits: s.habits.filter(h => h.id !== hid) }));
+}
+
+function saveGoal(payload, existingId) {
+  setState(s => {
+    if (existingId) {
+      return { ...s, goals: s.goals.map(g => g.id === existingId ? { ...g, ...payload } : g) };
+    }
+    return { ...s, goals: [...s.goals, { id: uid(), createdAt: dKey(), ...payload }] };
+  });
+}
+function deleteGoal(gid) {
+  setState(s => ({ ...s, goals: s.goals.filter(g => g.id !== gid) }));
+}
+
+function saveProject(payload, existingId) {
+  setState(s => {
+    if (existingId) {
+      return { ...s, projects: s.projects.map(p => p.id === existingId ? { ...p, ...payload } : p) };
+    }
+    return { ...s, projects: [...s.projects, { id: uid(), createdAt: dKey(), ...payload }] };
+  });
+}
+function deleteProject(pid) {
+  setState(s => ({ ...s, projects: s.projects.filter(p => p.id !== pid) }));
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const App = document.getElementById('app');
+
+function render() {
+  App.innerHTML = renderHeader() + renderPage() + renderTabbar() + renderFab();
+  attachHandlers();
+}
+
+function renderHeader() {
+  if (view !== 'today') return '';
+  const now = new Date();
+  const greeting =
+    now.getHours() < 5 ? 'Late hours' :
+    now.getHours() < 12 ? 'Good morning' :
+    now.getHours() < 18 ? 'Good afternoon' :
+    'Good evening';
+  const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+  return `
+    <div class="header">
+      <div class="date">${dateStr}</div>
+      <div class="greeting">${greeting}.<br/><span class="accent">What moves today?</span></div>
+    </div>
+  `;
+}
+
+function renderPage() {
+  if (view === 'today') return renderToday();
+  if (view === 'habits') return renderHabits();
+  if (view === 'goals') return renderGoals();
+  if (view === 'projects') return renderProjects();
+  return '';
+}
+
+function renderToday() {
+  const today = dKey();
+  const habitsDone = state.habits.filter(h => h.completions.includes(today)).length;
+  const habitsTotal = state.habits.length;
+  const pct = habitsTotal ? Math.round((habitsDone / habitsTotal) * 100) : 0;
+  const r = 36, c = 2 * Math.PI * r;
+  const offset = c - (c * pct / 100);
+
+  const activeGoals = state.goals.filter(g => (g.progress || 0) < 100).slice(0, 6);
+  const activeProjects = state.projects.filter(p => p.status === 'active').slice(0, 6);
+
+  return `
+    <div class="page">
+      <div class="hero">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="40" cy="40" r="${r}"/>
+            <circle class="ring-fg" cx="40" cy="40" r="${r}"
+              stroke="url(#gh)" stroke-dasharray="${c}" stroke-dashoffset="${offset}"/>
+            <defs>
+              <linearGradient id="gh" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#FF8E72"/>
+                <stop offset="1" stop-color="#FF5476"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="ring-pct">${pct}%</div>
+        </div>
+        <div class="hero-text">
+          <div class="label">Today's progress</div>
+          <div class="stat">${habitsDone} of ${habitsTotal}</div>
+          <div class="sub">habits completed</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="eyebrow">Today's Habits</div>
+        ${state.habits.length === 0 ? emptyCard('🌿', 'No habits yet', 'Add one to start a streak.', 'habits') : renderHabitRows(state.habits, true)}
+      </div>
+
+      ${activeGoals.length > 0 ? `
+      <div class="section">
+        <div class="eyebrow">Goals in motion</div>
+        <div class="scroll-x"><div class="h-stack">
+          ${activeGoals.map(g => goalCard(g)).join('')}
+        </div></div>
+      </div>` : ''}
+
+      ${activeProjects.length > 0 ? `
+      <div class="section">
+        <div class="eyebrow">Projects in flight</div>
+        <div class="stack">
+          ${activeProjects.map(p => projectCard(p)).join('')}
+        </div>
+      </div>` : ''}
+    </div>
+  `;
+}
+
+function renderHabits() {
+  return `
+    <div class="page">
+      <div class="section-title">Habits</div>
+      <div class="section-sub">Build streaks. Tap to complete today.</div>
+      ${state.habits.length === 0
+        ? emptyCard('🔥', 'No habits yet', 'Tap the + button to add one.', 'habits')
+        : `<div class="stack">${state.habits.map(h => habitFullCard(h)).join('')}</div>`}
+    </div>
+  `;
+}
+
+function habitFullCard(h) {
+  const today = dKey();
+  const doneToday = h.completions.includes(today);
+  const streak = calcStreak(h.completions);
+  const best = longestStreak(h.completions);
+
+  // Last 7 days dots
+  const last7 = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const k = dKey(d);
+    last7.push({ k, done: h.completions.includes(k), today: k === today });
+  }
+
+  // 12 week heatmap
+  const cols = [];
+  const totalDays = 12 * 7;
+  for (let c = 0; c < 12; c++) {
+    const col = [];
+    for (let row = 0; row < 7; row++) {
+      const i = (11 - c) * 7 + (6 - row);
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const k = dKey(d);
+      col.push({ k, done: h.completions.includes(k), today: k === today });
+    }
+    cols.unshift(col);
+  }
+
+  return `
+    <div class="card">
+      <div class="habit-row" style="background: transparent; padding: 0; box-shadow: none;">
+        <button class="check ${doneToday ? 'checked' : ''}" data-action="toggle-habit" data-id="${h.id}">
+          ${ICONS.check}
+        </button>
+        <div>
+          <div class="habit-name">${escapeHtml(h.name)}</div>
+          <div class="habit-meta">
+            ${streak > 0 ? `<span class="streak-pill">${ICONS.flameSolid} ${streak}</span>` : `<span>No streak yet</span>`}
+            <span class="dot">·</span>
+            <span>best ${best}</span>
+            <span class="dot">·</span>
+            <span>${h.completions.length} total</span>
+          </div>
+        </div>
+        <button class="icon-btn" data-action="edit-habit" data-id="${h.id}">${ICONS.edit}</button>
+      </div>
+
+      <div class="week-dots">
+        ${last7.map(d => `<div class="week-dot ${d.done ? 'done' : ''} ${d.today ? 'today' : ''}" title="${d.k}"></div>`).join('')}
+      </div>
+
+      <div style="margin-top: 14px;">
+        <div class="eyebrow" style="margin-bottom: 8px;">Last 12 weeks</div>
+        <div class="heatmap">
+          ${cols.map(col => `<div class="heat-col">${col.map(c => `<div class="heat-cell ${c.done ? 'done' : ''} ${c.today ? 'today' : ''}" title="${c.k}"></div>`).join('')}</div>`).join('')}
+        </div>
+      </div>
+
+      ${h.note ? `<div style="margin-top: 14px; padding: 10px 12px; background: var(--bg-soft); border-radius: var(--r-sm); font-size: 13px; color: var(--ink-2); font-style: italic;">${escapeHtml(h.note)}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderHabitRows(habits, simple) {
+  return `<div class="stack">${habits.map(h => simpleHabitRow(h)).join('')}</div>`;
+}
+function simpleHabitRow(h) {
+  const today = dKey();
+  const doneToday = h.completions.includes(today);
+  const streak = calcStreak(h.completions);
+  return `
+    <div class="habit-row ${doneToday ? 'done' : ''}">
+      <button class="check ${doneToday ? 'checked' : ''}" data-action="toggle-habit" data-id="${h.id}">
+        ${ICONS.check}
+      </button>
+      <div>
+        <div class="habit-name">${escapeHtml(h.name)}</div>
+        <div class="habit-meta">
+          ${streak > 0 ? `<span class="streak-pill">${ICONS.flameSolid} ${streak}</span>` : `<span>Start today</span>`}
+          ${streak > 0 ? `<span class="dot">·</span><span>${streak === 1 ? 'day' : 'days'}</span>` : ''}
+        </div>
+      </div>
+      <button class="icon-btn" data-action="edit-habit" data-id="${h.id}">${ICONS.edit}</button>
+    </div>
+  `;
+}
+
+function renderGoals() {
+  const filter = state._goalFilter || 'all';
+  let filtered = state.goals;
+  if (filter === 'personal') filtered = state.goals.filter(g => g.category === 'personal' && (g.progress || 0) < 100);
+  else if (filter === 'professional') filtered = state.goals.filter(g => g.category === 'professional' && (g.progress || 0) < 100);
+  else if (filter === 'complete') filtered = state.goals.filter(g => (g.progress || 0) === 100);
+
+  return `
+    <div class="page">
+      <div class="section-title">Goals</div>
+      <div class="section-sub">What you're after.</div>
+      <div class="filters">
+        ${['all','personal','professional','complete'].map(f =>
+          `<button class="filter ${filter === f ? 'active' : ''}" data-action="goal-filter" data-f="${f}">${f[0].toUpperCase()+f.slice(1)}</button>`
+        ).join('')}
+      </div>
+      ${filtered.length === 0
+        ? emptyCard('🎯', 'No goals here', 'Tap + to add one.', 'goals')
+        : `<div class="stack">${filtered.map(g => goalCard(g)).join('')}</div>`}
+    </div>
+  `;
+}
+
+function goalCard(g) {
+  const cat = g.category || 'personal';
+  const days = g.targetDate ? daysBetween(dKey(), g.targetDate) : null;
+  const msTotal = (g.milestones || []).length;
+  const msDone = (g.milestones || []).filter(m => m.done).length;
+  const progress = g.progress || 0;
+  return `
+    <button class="goal-card ${cat} card-tap row-tap" data-action="edit-goal" data-id="${g.id}">
+      <div class="between">
+        <span class="pill ${cat}">${cat}</span>
+        ${ICONS.arrowUp.replace('<svg', '<svg style="width:16px;height:16px;color:var(--ink-3);"')}
+      </div>
+      <div class="card-title">${escapeHtml(g.title)}</div>
+      ${g.description ? `<div class="card-desc">${escapeHtml(g.description)}</div>` : ''}
+      <div class="progress-row">
+        <span>PROGRESS</span>
+        <span class="pct">${progress}%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <div class="meta-row">
+        ${msTotal > 0 ? `<span>${msDone}/${msTotal} milestones</span>` : ''}
+        ${msTotal > 0 && days !== null ? `<span class="dot">·</span>` : ''}
+        ${days !== null ? `<span class="${days < 0 ? 'overdue' : ''}">${days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? 'due today' : `${days}d to go`}</span>` : ''}
+      </div>
+    </button>
+  `;
+}
+
+function renderProjects() {
+  const filter = state._projectFilter || 'all';
+  let filtered = state.projects;
+  if (filter !== 'all') filtered = state.projects.filter(p => p.status === filter);
+  return `
+    <div class="page">
+      <div class="section-title">Projects</div>
+      <div class="section-sub">What you're building.</div>
+      <div class="filters">
+        <button class="filter ${filter === 'all' ? 'active' : ''}" data-action="project-filter" data-f="all">All</button>
+        ${STATUS.map(s => `<button class="filter ${filter === s.v ? 'active' : ''}" data-action="project-filter" data-f="${s.v}">${s.l}</button>`).join('')}
+      </div>
+      ${filtered.length === 0
+        ? emptyCard('🚀', 'No projects here', 'Tap + to add one.', 'projects')
+        : `<div class="stack">${filtered.map(p => projectCard(p)).join('')}</div>`}
+    </div>
+  `;
+}
+
+function projectCard(p) {
+  const status = STATUS.find(s => s.v === p.status) || STATUS[0];
+  const msTotal = (p.milestones || []).length;
+  const msDone = (p.milestones || []).filter(m => m.done).length;
+  const pct = msTotal ? Math.round((msDone / msTotal) * 100) : 0;
+  const days = p.dueDate ? daysBetween(dKey(), p.dueDate) : null;
+  return `
+    <button class="project-card ${p.status || 'planning'} card-tap row-tap" data-action="edit-project" data-id="${p.id}">
+      <div class="between">
+        <span class="pill ${p.status || 'planning'}">${status.emoji} ${status.l}</span>
+        ${ICONS.arrowUp.replace('<svg', '<svg style="width:16px;height:16px;color:var(--ink-3);"')}
+      </div>
+      <div class="card-title">${escapeHtml(p.title)}</div>
+      ${p.description ? `<div class="card-desc">${escapeHtml(p.description)}</div>` : ''}
+      ${msTotal > 0 ? `
+        <div class="progress-row"><span>MILESTONES</span><span class="pct">${msDone}/${msTotal}</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      ` : ''}
+      ${days !== null ? `<div class="meta-row"><span class="${days < 0 ? 'overdue' : ''}">${days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? 'due today' : `due in ${days}d`}</span></div>` : ''}
+    </button>
+  `;
+}
+
+function emptyCard(emoji, title, sub, target) {
+  const colorMap = { habits: 'primary', goals: 'primary indigo', projects: 'primary emerald' };
+  const cls = colorMap[target] || 'primary';
+  return `
+    <div class="empty">
+      <span class="emoji">${emoji}</span>
+      <div class="title">${title}</div>
+      <div class="sub">${sub}</div>
+      <button class="btn ${cls}" data-action="open-add" data-target="${target}">${ICONS.plus} Add ${target.slice(0,-1)}</button>
+    </div>
+  `;
+}
+
+function renderTabbar() {
+  const tabs = [
+    { v: 'today', l: 'Today', icon: ICONS.sparkles },
+    { v: 'habits', l: 'Habits', icon: ICONS.flame },
+    { v: 'goals', l: 'Goals', icon: ICONS.target },
+    { v: 'projects', l: 'Projects', icon: ICONS.briefcase },
+  ];
+  return `
+    <div class="tabbar">
+      <div class="tabbar-inner">
+        ${tabs.map(t => `
+          <button class="tab ${view === t.v ? 'active ' + t.v : ''}" data-action="set-view" data-view="${t.v}">
+            ${t.icon}
+            <span class="label">${t.l}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderFab() {
+  if (view === 'today') return '';
+  const cls = view; // habits, goals, projects
+  return `<button class="fab ${cls}" data-action="open-add" data-target="${view}">${ICONS.plus}</button>`;
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+/* ============================================================
+   EVENT HANDLERS
+   ============================================================ */
+function attachHandlers() {
+  App.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', handleAction);
+  });
+}
+
+function handleAction(ev) {
+  const el = ev.currentTarget;
+  const action = el.dataset.action;
+  const id = el.dataset.id;
+
+  if (action === 'set-view') {
+    view = el.dataset.view; render();
+  } else if (action === 'toggle-habit') {
+    toggleHabit(id, ev);
+  } else if (action === 'edit-habit') {
+    const h = state.habits.find(x => x.id === id);
+    openHabitSheet(h);
+  } else if (action === 'edit-goal') {
+    const g = state.goals.find(x => x.id === id);
+    openGoalSheet(g);
+  } else if (action === 'edit-project') {
+    const p = state.projects.find(x => x.id === id);
+    openProjectSheet(p);
+  } else if (action === 'open-add') {
+    const t = el.dataset.target;
+    if (t === 'habits') openHabitSheet(null);
+    else if (t === 'goals') openGoalSheet(null);
+    else if (t === 'projects') openProjectSheet(null);
+  } else if (action === 'goal-filter') {
+    setState(s => ({ ...s, _goalFilter: el.dataset.f }));
+  } else if (action === 'project-filter') {
+    setState(s => ({ ...s, _projectFilter: el.dataset.f }));
+  }
+}
+
+/* ============================================================
+   SHEET (modal)
+   ============================================================ */
+const sheet = document.getElementById('sheet');
+const scrim = document.getElementById('scrim');
+let sheetOpen = false;
+scrim.addEventListener('click', closeSheet);
+
+function openSheet(html, onMount) {
+  sheet.innerHTML = html;
+  if (onMount) onMount();
+  scrim.classList.add('open');
+  requestAnimationFrame(() => sheet.classList.add('open'));
+  sheetOpen = true;
+  document.body.style.overflow = 'hidden';
+}
+function closeSheet() {
+  scrim.classList.remove('open');
+  sheet.classList.remove('open');
+  sheetOpen = false;
+  document.body.style.overflow = '';
+  setTimeout(() => { sheet.innerHTML = ''; }, 360);
+}
+
+function sheetFrame(title, bodyHtml, actions) {
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title">${title}</div>
+      <button class="icon-btn" id="sheet-close">${ICONS.x}</button>
+    </div>
+    <div class="sheet-body">${bodyHtml}</div>
+    <div class="sheet-actions">${actions}</div>
+  `;
+}
+
+function openHabitSheet(habit) {
+  const editing = !!habit;
+  const html = sheetFrame(
+    editing ? 'Edit Habit' : 'New Habit',
+    `
+      <div class="field">
+        <label class="field-label">Habit name</label>
+        <div class="input-wrap"><input id="h-name" placeholder="e.g. 30 min reading" value="${editing ? escapeHtml(habit.name) : ''}"/></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Why it matters (optional)</label>
+        <div class="input-wrap"><textarea id="h-note" placeholder="A note to your future self">${editing ? escapeHtml(habit.note || '') : ''}</textarea></div>
+      </div>
+    `,
+    `
+      ${editing ? '<button class="btn danger" id="h-del">Delete</button>' : ''}
+      <button class="btn ghost" id="h-cancel">Cancel</button>
+      <button class="btn primary" id="h-save">Save</button>
+    `
+  );
+  openSheet(html, () => {
+    document.getElementById('sheet-close').onclick = closeSheet;
+    document.getElementById('h-cancel').onclick = closeSheet;
+    document.getElementById('h-save').onclick = () => {
+      const name = document.getElementById('h-name').value.trim();
+      const note = document.getElementById('h-note').value.trim();
+      if (!name) return;
+      saveHabit({ name, note }, editing ? habit.id : null);
+      closeSheet();
+    };
+    if (editing) {
+      document.getElementById('h-del').onclick = () => {
+        deleteHabit(habit.id);
+        closeSheet();
+      };
+    }
+  });
+}
+
+function openGoalSheet(goal) {
+  const editing = !!goal;
+  const draft = {
+    title: editing ? goal.title : '',
+    description: editing ? (goal.description || '') : '',
+    category: editing ? (goal.category || 'personal') : 'personal',
+    targetDate: editing ? (goal.targetDate || '') : '',
+    progress: editing ? (goal.progress || 0) : 0,
+    milestones: editing ? [...(goal.milestones || [])] : []
+  };
+
+  function rerenderForm() {
+    document.getElementById('g-form').innerHTML = goalFormBody(draft);
+    bindGoalForm();
+  }
+
+  function goalFormBody(d) {
+    return `
+      <div class="field">
+        <label class="field-label">Title</label>
+        <div class="input-wrap"><input id="g-title" placeholder="What are you working toward?" value="${escapeHtml(d.title)}"/></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Detail (optional)</label>
+        <div class="input-wrap"><textarea id="g-desc" placeholder="Why this, why now">${escapeHtml(d.description)}</textarea></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Category</label>
+        <div class="chip-group">
+          <button class="chip ${d.category === 'personal' ? 'active' : ''}" data-cat="personal">🌿 Personal</button>
+          <button class="chip ${d.category === 'professional' ? 'active' : ''}" data-cat="professional">💼 Professional</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Target date (optional)</label>
+        <div class="input-wrap"><input type="date" id="g-date" value="${d.targetDate}"/></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Progress · ${d.progress}%</label>
+        <div class="slider-wrap"><input type="range" id="g-prog" min="0" max="100" step="5" value="${d.progress}"/></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Milestones</label>
+        <div class="ms-list" id="g-ms-list">
+          ${d.milestones.map((m, i) => `
+            <div class="ms-item">
+              <button class="ms-check ${m.done ? 'checked' : ''}" data-msi="${i}">${ICONS.check}</button>
+              <div class="ms-text ${m.done ? 'done' : ''}">${escapeHtml(m.text)}</div>
+              <button class="icon-btn" data-msdel="${i}">${ICONS.x}</button>
+            </div>
+          `).join('')}
+        </div>
+        <div class="ms-add">
+          <div class="input-wrap"><input id="g-ms-input" placeholder="Add a milestone…"/></div>
+          <button id="g-ms-add">Add</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function bindGoalForm() {
+    document.querySelectorAll('#g-form [data-cat]').forEach(b => {
+      b.onclick = () => { draft.category = b.dataset.cat; rerenderForm(); };
+    });
+    document.getElementById('g-title').oninput = e => draft.title = e.target.value;
+    document.getElementById('g-desc').oninput = e => draft.description = e.target.value;
+    document.getElementById('g-date').onchange = e => draft.targetDate = e.target.value;
+    document.getElementById('g-prog').oninput = e => {
+      draft.progress = Number(e.target.value);
+      document.querySelector('#g-form .field-label').textContent = `Progress · ${draft.progress}%`;
+    };
+    document.querySelectorAll('#g-form [data-msi]').forEach(b => {
+      b.onclick = () => { draft.milestones[b.dataset.msi].done = !draft.milestones[b.dataset.msi].done; rerenderForm(); };
+    });
+    document.querySelectorAll('#g-form [data-msdel]').forEach(b => {
+      b.onclick = () => { draft.milestones.splice(b.dataset.msdel, 1); rerenderForm(); };
+    });
+    document.getElementById('g-ms-add').onclick = () => {
+      const inp = document.getElementById('g-ms-input');
+      const v = inp.value.trim();
+      if (v) { draft.milestones.push({ id: uid(), text: v, done: false }); rerenderForm(); }
+    };
+  }
+
+  const html = sheetFrame(
+    editing ? 'Edit Goal' : 'New Goal',
+    `<div id="g-form">${goalFormBody(draft)}</div>`,
+    `
+      ${editing ? '<button class="btn danger" id="g-del">Delete</button>' : ''}
+      <button class="btn ghost" id="g-cancel">Cancel</button>
+      <button class="btn primary indigo" id="g-save">Save</button>
+    `
+  );
+  openSheet(html, () => {
+    document.getElementById('sheet-close').onclick = closeSheet;
+    document.getElementById('g-cancel').onclick = closeSheet;
+    document.getElementById('g-save').onclick = () => {
+      if (!draft.title.trim()) return;
+      saveGoal({ ...draft, title: draft.title.trim(), description: draft.description.trim() }, editing ? goal.id : null);
+      closeSheet();
+    };
+    if (editing) {
+      document.getElementById('g-del').onclick = () => { deleteGoal(goal.id); closeSheet(); };
+    }
+    bindGoalForm();
+  });
+}
+
+function openProjectSheet(project) {
+  const editing = !!project;
+  const draft = {
+    title: editing ? project.title : '',
+    description: editing ? (project.description || '') : '',
+    status: editing ? (project.status || 'planning') : 'planning',
+    dueDate: editing ? (project.dueDate || '') : '',
+    milestones: editing ? [...(project.milestones || [])] : []
+  };
+
+  function rerenderForm() {
+    document.getElementById('p-form').innerHTML = projectFormBody(draft);
+    bindProjectForm();
+  }
+
+  function projectFormBody(d) {
+    return `
+      <div class="field">
+        <label class="field-label">Project name</label>
+        <div class="input-wrap"><input id="p-title" placeholder="What's the project?" value="${escapeHtml(d.title)}"/></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Description (optional)</label>
+        <div class="input-wrap"><textarea id="p-desc" placeholder="Scope, context, intent">${escapeHtml(d.description)}</textarea></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Status</label>
+        <div class="chip-group">
+          ${STATUS.map(s => `<button class="chip ${d.status === s.v ? 'active' : ''}" data-status="${s.v}">${s.emoji} ${s.l}</button>`).join('')}
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Due date (optional)</label>
+        <div class="input-wrap"><input type="date" id="p-date" value="${d.dueDate}"/></div>
+      </div>
+      <div class="field">
+        <label class="field-label">Milestones</label>
+        <div class="ms-list" id="p-ms-list">
+          ${d.milestones.map((m, i) => `
+            <div class="ms-item">
+              <button class="ms-check ${m.done ? 'checked' : ''}" data-msi="${i}">${ICONS.check}</button>
+              <div class="ms-text ${m.done ? 'done' : ''}">${escapeHtml(m.text)}</div>
+              <button class="icon-btn" data-msdel="${i}">${ICONS.x}</button>
+            </div>
+          `).join('')}
+        </div>
+        <div class="ms-add">
+          <div class="input-wrap"><input id="p-ms-input" placeholder="Add a milestone…"/></div>
+          <button id="p-ms-add">Add</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function bindProjectForm() {
+    document.querySelectorAll('#p-form [data-status]').forEach(b => {
+      b.onclick = () => { draft.status = b.dataset.status; rerenderForm(); };
+    });
+    document.getElementById('p-title').oninput = e => draft.title = e.target.value;
+    document.getElementById('p-desc').oninput = e => draft.description = e.target.value;
+    document.getElementById('p-date').onchange = e => draft.dueDate = e.target.value;
+    document.querySelectorAll('#p-form [data-msi]').forEach(b => {
+      b.onclick = () => { draft.milestones[b.dataset.msi].done = !draft.milestones[b.dataset.msi].done; rerenderForm(); };
+    });
+    document.querySelectorAll('#p-form [data-msdel]').forEach(b => {
+      b.onclick = () => { draft.milestones.splice(b.dataset.msdel, 1); rerenderForm(); };
+    });
+    document.getElementById('p-ms-add').onclick = () => {
+      const inp = document.getElementById('p-ms-input');
+      const v = inp.value.trim();
+      if (v) { draft.milestones.push({ id: uid(), text: v, done: false }); rerenderForm(); }
+    };
+  }
+
+  const html = sheetFrame(
+    editing ? 'Edit Project' : 'New Project',
+    `<div id="p-form">${projectFormBody(draft)}</div>`,
+    `
+      ${editing ? '<button class="btn danger" id="p-del">Delete</button>' : ''}
+      <button class="btn ghost" id="p-cancel">Cancel</button>
+      <button class="btn primary emerald" id="p-save">Save</button>
+    `
+  );
+  openSheet(html, () => {
+    document.getElementById('sheet-close').onclick = closeSheet;
+    document.getElementById('p-cancel').onclick = closeSheet;
+    document.getElementById('p-save').onclick = () => {
+      if (!draft.title.trim()) return;
+      saveProject({ ...draft, title: draft.title.trim(), description: draft.description.trim() }, editing ? project.id : null);
+      closeSheet();
+    };
+    if (editing) {
+      document.getElementById('p-del').onclick = () => { deleteProject(project.id); closeSheet(); };
+    }
+    bindProjectForm();
+  });
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init() {
+  const loaded = await Store.load();
+  if (loaded) state = { ...DEFAULT_STATE, ...loaded };
+  render();
+})();
+
+/* ============================================================
+   PWA: register service worker if hosted
+   ============================================================ */
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  // Optional: a hosting setup can add a sw.js next to this file.
+  // Without one, "Add to Home Screen" still works on iOS/Android.
+}
+</script>
+</body>
+</html>
