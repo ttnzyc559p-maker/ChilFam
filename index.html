@@ -308,6 +308,10 @@
   }
   .goal-card.personal::before { background: var(--grad-emerald); }
   .goal-card.professional::before { background: var(--grad-indigo); }
+  .goal-card.spiritual::before { background: var(--grad-indigo); }
+  .goal-card.physical::before { background: var(--grad-tang); }
+  .goal-card.social::before { background: var(--grad-emerald); }
+  .goal-card.intellectual::before { background: var(--grad-amber); }
   .project-card.planning::before { background: var(--grad-amber); }
   .project-card.active::before { background: var(--grad-emerald); }
   .project-card.hold::before { background: var(--grad-amber); }
@@ -323,6 +327,10 @@
   }
   .pill.personal { background: rgba(5, 150, 105, 0.12); color: var(--emerald-2); }
   .pill.professional { background: rgba(79, 70, 229, 0.12); color: var(--indigo-2); }
+  .pill.spiritual { background: rgba(79, 70, 229, 0.12); color: var(--indigo-2); }
+  .pill.physical { background: rgba(255, 87, 34, 0.12); color: var(--tang-2); }
+  .pill.social { background: rgba(5, 150, 105, 0.12); color: var(--emerald-2); }
+  .pill.intellectual { background: rgba(245, 158, 11, 0.12); color: var(--amber-2); }
   .pill.planning { background: rgba(245, 158, 11, 0.12); color: var(--amber-2); }
   .pill.active { background: rgba(5, 150, 105, 0.12); color: var(--emerald-2); }
   .pill.hold { background: rgba(245, 158, 11, 0.12); color: var(--amber-2); }
@@ -361,6 +369,10 @@
     transition: width 600ms cubic-bezier(0.2, 0.9, 0.3, 1);
   }
   .goal-card.professional .progress-fill { background: var(--grad-indigo); }
+  .goal-card.spiritual .progress-fill { background: var(--grad-indigo); }
+  .goal-card.physical .progress-fill { background: var(--grad-tang); }
+  .goal-card.social .progress-fill { background: var(--grad-emerald); }
+  .goal-card.intellectual .progress-fill { background: var(--grad-amber); }
   .project-card .progress-fill { background: var(--grad-emerald); }
 
   .meta-row {
@@ -1139,8 +1151,10 @@ function simpleHabitRow(h) {
 function renderGoals() {
   const filter = state._goalFilter || 'all';
   let filtered = state.goals;
-  if (filter === 'personal') filtered = state.goals.filter(g => g.category === 'personal' && (g.progress || 0) < 100);
-  else if (filter === 'professional') filtered = state.goals.filter(g => g.category === 'professional' && (g.progress || 0) < 100);
+  if (filter === 'spiritual') filtered = state.goals.filter(g => g.category === 'spiritual' && (g.progress || 0) < 100);
+  else if (filter === 'physical') filtered = state.goals.filter(g => g.category === 'physical' && (g.progress || 0) < 100);
+  else if (filter === 'social') filtered = state.goals.filter(g => g.category === 'social' && (g.progress || 0) < 100);
+  else if (filter === 'intellectual') filtered = state.goals.filter(g => g.category === 'intellectual' && (g.progress || 0) < 100);
   else if (filter === 'complete') filtered = state.goals.filter(g => (g.progress || 0) === 100);
 
   return `
@@ -1148,7 +1162,7 @@ function renderGoals() {
       <div class="section-title">Goals</div>
       <div class="section-sub">What you're after.</div>
       <div class="filters">
-        ${['all','personal','professional','complete'].map(f =>
+        ${['all','spiritual','physical','social','intellectual','complete'].map(f =>
           `<button class="filter ${filter === f ? 'active' : ''}" data-action="goal-filter" data-f="${f}">${f[0].toUpperCase()+f.slice(1)}</button>`
         ).join('')}
       </div>
@@ -1160,7 +1174,7 @@ function renderGoals() {
 }
 
 function goalCard(g) {
-  const cat = g.category || 'personal';
+  const cat = g.category || 'spiritual';
   const days = g.targetDate ? daysBetween(dKey(), g.targetDate) : null;
   const msTotal = (g.milestones || []).length;
   const msDone = (g.milestones || []).filter(m => m.done).length;
@@ -1395,7 +1409,7 @@ function openGoalSheet(goal) {
   const draft = {
     title: editing ? goal.title : '',
     description: editing ? (goal.description || '') : '',
-    category: editing ? (goal.category || 'personal') : 'personal',
+    category: editing ? (goal.category || 'spiritual') : 'spiritual',
     targetDate: editing ? (goal.targetDate || '') : '',
     progress: editing ? (goal.progress || 0) : 0,
     milestones: editing ? [...(goal.milestones || [])] : []
@@ -1419,8 +1433,10 @@ function openGoalSheet(goal) {
       <div class="field">
         <label class="field-label">Category</label>
         <div class="chip-group">
-          <button class="chip ${d.category === 'personal' ? 'active' : ''}" data-cat="personal">🌿 Personal</button>
-          <button class="chip ${d.category === 'professional' ? 'active' : ''}" data-cat="professional">💼 Professional</button>
+          <button class="chip ${d.category === 'spiritual' ? 'active' : ''}" data-cat="spiritual">🙏 Spiritual</button>
+          <button class="chip ${d.category === 'physical' ? 'active' : ''}" data-cat="physical">💪 Physical</button>
+          <button class="chip ${d.category === 'social' ? 'active' : ''}" data-cat="social">🤝 Social</button>
+          <button class="chip ${d.category === 'intellectual' ? 'active' : ''}" data-cat="intellectual">📚 Intellectual</button>
         </div>
       </div>
       <div class="field">
